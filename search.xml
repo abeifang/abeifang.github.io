@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>用户中心</title>
+      <link href="/2024/05/09/%E6%8C%87%E4%BB%A4%E8%AE%B0%E5%BD%95%E5%AD%98%E6%A1%A3/"/>
+      <url>/2024/05/09/%E6%8C%87%E4%BB%A4%E8%AE%B0%E5%BD%95%E5%AD%98%E6%A1%A3/</url>
+      
+        <content type="html"><![CDATA[<div class="tip info"><p>此文章用来存储一些工具的使用指令。人老了记不住。 </p></div><h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><ul><li>工作区-&gt;暂存区 git add</li><li>暂存区-&gt;仓库 git commit -m ‘备注’</li><li>查看状态 git status</li><li>查看提交记录 git log 等等，自己简化的指令 git-log</li><li>版本回退  git reset –hard commitID</li><li>查看分支 git branch</li><li>创建并切换分支 git checkout -b 分支名</li><li>分支合并 git merge 分支名</li><li>删除分支 git branch -d 分支名 （需要切换到另一个分支上）</li><li>将本地仓库与gitee关联 git remote add origin 远程仓库的ssh</li><li>查看远程仓库 git remote</li><li>推送到远程仓库 git push [-f] (强制覆盖) origin master</li><li>推送到远端的同时并且建立起和远端分支的关联关系 git push –set-upstream origin master<ul><li>建立之后，可以省略分支名和远端名 git push</li></ul></li><li>克隆 get clone 仓库地址</li><li>抓取 git fetch [remote name] [branch name]</li><li>拉取 git pull [remote name] [branch name]</li></ul><h1 id="Java后端"><a href="#Java后端" class="headerlink" title="Java后端"></a>Java后端</h1><h2 id="将接收的JSON数据类型转化为对象并存储到Map中"><a href="#将接收的JSON数据类型转化为对象并存储到Map中" class="headerlink" title="将接收的JSON数据类型转化为对象并存储到Map中"></a>将接收的JSON数据类型转化为对象并存储到Map中</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//2 json 转对象（可以使用生成一个对象来进行接收，或者使用Map）</span></span><br><span class="line">        Map&lt;String, Object&gt;map = JSONUtil.toBean(result,Map.class);</span><br></pre></td></tr></table></figure><h1 id="Pyenv"><a href="#Pyenv" class="headerlink" title="Pyenv"></a>Pyenv</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 查看可安装的python发行版本</span><br><span class="line">pyenv install -l</span><br><span class="line"># 安装指定python版本</span><br><span class="line">pyenv install 3.9.0</span><br><span class="line"># 查看当前已安装的python版本(标*的为当前环境python)</span><br><span class="line">pyenv versions</span><br><span class="line">pyenv version</span><br><span class="line"># 切换python版本</span><br><span class="line">pyenv local 3.9.0</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 工具 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>重庆</title>
       <link href="/2024/05/09/%E9%87%8D%E5%BA%86/"/>
       <url>/2024/05/09/%E9%87%8D%E5%BA%86/</url>
