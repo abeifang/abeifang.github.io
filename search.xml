@@ -90,8 +90,16 @@
           
           <category> 个人项目 </category>
           
+          <category> 学习 </category>
+          
       </categories>
       
+      
+        <tags>
+            
+            <tag> 项目实践 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -107,14 +115,16 @@
       
       <categories>
           
-          <category> 部署文档 </category>
+          <category> 学习 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 经验 学习 </tag>
+            <tag> 上线 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -132,7 +142,7 @@
       
       <categories>
           
-          <category> 部署踩坑 </category>
+          <category> 学习 </category>
           
       </categories>
       
@@ -140,6 +150,8 @@
         <tags>
             
             <tag> 踩坑 </tag>
+            
+            <tag> 上线 </tag>
             
         </tags>
       
