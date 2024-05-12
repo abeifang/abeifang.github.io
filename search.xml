@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>伙伴匹配系统</title>
+      <link href="/2024/05/11/%E4%BC%99%E4%BC%B4%E5%8C%B9%E9%85%8D%E7%B3%BB%E7%BB%9F/"/>
+      <url>/2024/05/11/%E4%BC%99%E4%BC%B4%E5%8C%B9%E9%85%8D%E7%B3%BB%E7%BB%9F/</url>
+      
+        <content type="html"><![CDATA[<h1 id="伙伴匹配系统"><a href="#伙伴匹配系统" class="headerlink" title="伙伴匹配系统"></a>伙伴匹配系统</h1><div class="tip info"><p>介绍：帮助用户找到志同道合的伙伴 </p></div><h1 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h1><ol><li>用户去添加标签，标签的分类（要哪些标签，怎么把标签进行分类）学习方向？</li><li>主动搜索：允许用户根据标签去搜索其他用户<ol><li>Redis 缓存</li></ol></li><li>组队<ol><li>创建队伍</li><li>加入队伍</li><li>根据标签查询队伍</li><li>邀请其他人</li></ol></li><li>允许用户去修改标签</li><li>推荐<ol><li>相似度计算算法 + 本地分布式计算</li></ol></li></ol><h1 id="技术栈"><a href="#技术栈" class="headerlink" title="技术栈"></a>技术栈</h1><h2 id="前端"><a href="#前端" class="headerlink" title="前端"></a>前端</h2><ol><li>Vue 3 开发框架（提交页面开发效率）</li><li>Vant UI （基于 Vue 的移动端组件库） （React 版 Zent）</li><li>Vite （打包工具，快！）</li><li>Nginx 来单机部署</li></ol><h2 id="后端"><a href="#后端" class="headerlink" title="后端"></a>后端</h2><ol><li>Java 编程语言 + SpringBoot 框架</li><li>SpringMVC + Mybatis + Mybatis Plus</li><li>MySQL 数据库</li><li>Redis 缓存</li><li>Swagger + Knife4j 接口文档</li></ol><h1 id="第一期"><a href="#第一期" class="headerlink" title="第一期"></a>第一期</h1><ol><li>前端初始化</li><li>前端主页 + 组件概览</li><li>数据库表设计<ol><li>标签表</li><li>用户表</li></ol></li><li>开发后端 - 根据标签搜索用户</li><li>开发前端 - 根据标签搜索用户</li></ol><h2 id="前端项目初始化"><a href="#前端项目初始化" class="headerlink" title="前端项目初始化"></a>前端项目初始化</h2><p>用脚手架初始化项目</p><ul><li>Vue CLI</li><li>Vite 脚手架</li></ul><p>整合组件库 Vant：</p><ul><li>安装 Vant</li><li>按需引入 <a href="https://vant-ui.github.io/vant/#/zh-CN/quickstart">指令参考官方文档</a></li></ul><p>开发页面经验：</p><ol><li>多参考</li><li>从整体到局部</li><li>先想清楚页面要做成什么样子，再写代码</li></ol><h2 id="前端主页-组件概览"><a href="#前端主页-组件概览" class="headerlink" title="前端主页 + 组件概览"></a>前端主页 + 组件概览</h2><h3 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h3><ol><li>导航条：展示当前页面</li><li>主页搜索框 -&gt; 推荐页 -&gt; 搜索结果页</li><li>内容</li><li>tab栏：<ul><li>主页（推荐页 + 广告）<ul><li>搜索框</li><li>banner</li><li>推荐信息流</li></ul></li><li>队伍页</li><li>用户页</li></ul></li></ol><h3 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h3><p>很多页面要复用组件 &#x2F; 样式，重复写很麻烦，不利于维护，所以抽象一个通用的布局（Layout）</p><h2 id="数据库表设计"><a href="#数据库表设计" class="headerlink" title="数据库表设计"></a>数据库表设计</h2><p>标签的分类（要有哪些标签，怎么把标签分类）</p><h3 id="标签表（分类表）"><a href="#标签表（分类表）" class="headerlink" title="标签表（分类表）"></a>标签表（分类表）</h3><p>建议用标签不要用分类。更灵活</p><ul><li>性别 ： 男，女</li><li>方向：Java、Python、C++</li><li>目标：考研、春招、秋招、考公、竞赛</li><li>身份：大学生、待业、研究生</li><li>状态：乐观、有点丧、一般、单身、已婚、有对象</li><li>【用户自定义标签】？</li></ul><p>字段：</p><ul><li><p>id int 主键</p></li><li><p>标签名 varchar 非空 （必须唯一，唯一索引）</p></li><li><p>userId 上传标签的用户 int （普通索引）</p></li><li><p>parentId 父标签 int（分类）</p></li><li><p>isParent 是否为父标签 tinyint</p></li><li><p>creatTime 创建时间 datetime</p></li><li><p>updateTime 更新时间 datetime</p></li><li><p>isDelete 是否删除 tinyint</p></li></ul><p>怎么查询所有标签，并且把标签分好组？能实现 √</p><p>根据父标签查询子标签，根据id查询 √</p><p>SQL语言分类：</p><p>DDL define 建表、操作表</p><p>DML manager 更新删除数据，影响实际表里的内容</p><p>DCL control 控制、权限</p><p>DQL query 查询</p><h3 id="用户表"><a href="#用户表" class="headerlink" title="用户表"></a>用户表</h3><p>用户有哪些标签？</p><ol><li>直接在用户表补充 tags 字段，[‘java’, ‘男’]存 JSON 字符串<ol><li>优点：查询方便，不用新建关联表，标签是用户的固有属性（除了该系统、其他系统可能也要使用），节省开发成本。</li><li>缺点：用户表多一列，会有点</li><li>哪怕性能低，可以用缓存</li></ol></li><li>加一个关联表，记录用户和标签的关系<ol><li>优点：查询灵活，可以正查反查</li><li>缺点：要多建一个表、多维护一个表</li><li>重点：企业大项目开发中尽量减少关联查询，很影响扩展性，而且会影响查询性能</li></ol></li></ol><h2 id="开发后端接口"><a href="#开发后端接口" class="headerlink" title="开发后端接口"></a>开发后端接口</h2><p>搜索标签：</p><ol><li>允许用户传入多个标签，多个标签都存在才搜索出来 and。like %Java% and like %C++%</li><li>允许用户传入多个标签，有任何一个标签存在就能搜索出来 or。like %Java% or like %C++%</li></ol><p>两种方式：</p><ol><li>SQL查询</li><li>内存查询</li></ol><h2 id="用户中心来集中提供用户的检索、操作、登录、鉴权等等"><a href="#用户中心来集中提供用户的检索、操作、登录、鉴权等等" class="headerlink" title="用户中心来集中提供用户的检索、操作、登录、鉴权等等"></a>用户中心来集中提供用户的检索、操作、登录、鉴权等等</h2>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+          <category> 个人项目 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 项目实践 </tag>
+            
+            <tag> Java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>工具指令存档</title>
       <link href="/2024/05/09/%E6%8C%87%E4%BB%A4%E8%AE%B0%E5%BD%95%E5%AD%98%E6%A1%A3/"/>
       <url>/2024/05/09/%E6%8C%87%E4%BB%A4%E8%AE%B0%E5%BD%95%E5%AD%98%E6%A1%A3/</url>
