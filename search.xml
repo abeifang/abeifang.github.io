@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>JVM学习笔记</title>
+      <link href="/2024/05/29/JVM%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <url>/2024/05/29/JVM%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+      
+        <content type="html"><![CDATA[<h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><p>学习概览：</p><ol><li>基础篇<ul><li>初识JVM</li><li>字节码文件详解</li><li>Java 内存结构</li><li>垃圾回收</li><li>类的生命周期和类加载器</li></ul></li><li>实战篇<ul><li>内存泄漏<ul><li>概念学习</li><li>监控工具</li><li>产生原因</li><li>线上实战</li></ul></li><li>GC 调优</li><li>性能调优<ul><li>JMH 性能测试</li><li>线上实战</li></ul></li></ul></li><li>高级篇<ul><li>即时编译器 JIT</li><li>ASM 字节码增强</li><li>Java Agent 技术</li><li>ZGC </li><li>GraalVM<ul><li>功能介绍</li><li>入门案例</li><li>Spring Native</li><li>Web 应用</li></ul></li></ul></li><li>原理篇<ul><li>Java 对象布局</li><li>异常、反射原理</li><li>G1 垃圾回收器工作原理</li><li>编译器优化<ul><li>方法内联</li><li>逃逸分析</li></ul></li></ul></li><li>面试题<ul><li>常见的 JVM 参数</li><li>Tomcat 的类加载器</li><li>ThreadLocal 会内存泄露吗？</li><li>如何优化减少 Full GC</li><li>三色标记法是什么？</li></ul></li></ol><h2 id="初识-JVM"><a href="#初识-JVM" class="headerlink" title="初识 JVM"></a>初识 JVM</h2><p>JVM（Java Virtual Machine）: Java虚拟机</p><h3 id="JVM-的功能"><a href="#JVM-的功能" class="headerlink" title="JVM 的功能"></a>JVM 的功能</h3><p>解释和运行： 对字节码文件中的指令，实时的解释成机器码，让计算机执行</p><p>内存管理：</p><ul><li>自动为对象、方法等分配内存</li><li>自动的垃圾回收机制，回收不再使用的对象</li></ul><p>即时编译（JIT）</p><ul><li>对热点代码进行优化，提升执行效率</li><li>Java 语言如果不做任何优化，性能不如C、C++等语言</li><li>目的是为了跨平台</li></ul><h3 id="常见的-JVM"><a href="#常见的-JVM" class="headerlink" title="常见的 JVM"></a>常见的 JVM</h3><p><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405290945433.png" alt="image-20240529094548345"></p><h2 id="字节码文件详解"><a href="#字节码文件详解" class="headerlink" title="字节码文件详解"></a>字节码文件详解</h2><h3 id="JVM组成"><a href="#JVM组成" class="headerlink" title="JVM组成"></a>JVM组成</h3><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405290955343.png" alt="image-20240529095508295" style="zoom:50%;" /><h3 id="字节码文件的组成"><a href="#字节码文件的组成" class="headerlink" title="字节码文件的组成"></a>字节码文件的组成</h3><h4 id="以正确姿势打开文件"><a href="#以正确姿势打开文件" class="headerlink" title="以正确姿势打开文件"></a>以正确姿势打开文件</h4><ul><li>字节码文件中保存了源代码编译之后的内容，以二进制的方式存储，无法直接用记事本打开阅读。</li></ul><p>通过NotePad++ 使用十六进制插件查看class文件：</p><p>左边为地址，中间为十六进制数据，右边为编码</p><p><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405290959919.png" alt="image-20240529095935829"></p><p>推荐使用<a href="https://github.com/ingokegel/jclasslib/releases">jclasslib</a>工具查看字节码文件。</p><h4 id="字节码文件组成"><a href="#字节码文件组成" class="headerlink" title="字节码文件组成"></a>字节码文件组成</h4><p>基础信息：魔数、字节码文件对应的 Java 版本号访问标识（public final等等）、父类和接口</p><p>常量池：保存了字符串常量、类或接口名、字段名主要在字节码指令中使用</p><p>字段：当前类或接口声明的字段信息</p><p>方法：当前类或接口声明的方法信息转换成字节码指令</p><p>属性：类的属性，比如源码的文件名、内部类的列表等</p><p><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405291027489.png" alt="image-20240529102734415"></p><p>魔数：</p><p>每个字节码文件开头的4位都是指定的，称为魔数</p><p><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405291029930.png" alt="image-20240529102946836"></p><p>魔数的作用：</p><ul><li>文件是无法通过文件扩展名来确定文件类型的，文件扩展名可以随意修改，不影响文件的内容</li><li>软件使用文件的头几个字节（文件头）去校验文件的类型，如果软件不支持该种类型就会出错。</li></ul><p>常见的文件类型：</p><p><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405291032834.png" alt="image-20240529103207777"></p><h4 id="主副版本号"><a href="#主副版本号" class="headerlink" title="主副版本号"></a>主副版本号</h4><ul><li>主副版本号指的是编译字节码文件的 JDK 版本号，主版本号用来标识大版本号，JDK1.0-1.1使用了45.0-45.3，JDK1.2 是 46 之后每升级一个大版本就加1；副版本号是当主版本号相同时作为区分不同版本的标识，一般只需要关心主版本号</li><li>1.2之后大版本号计算方法就是：主版本号 - 44</li><li>版本号的作用主要是判断当前字节码的版本和运行时的 JDK 是否兼容</li></ul><p><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405291037021.png" alt="image-20240529103715970"></p><h4 id="常量池"><a href="#常量池" class="headerlink" title="常量池"></a>常量池</h4><ul><li>字节码文件中常量池的作用：避免相同的内容重复定义，节省空间。</li></ul><p>解释：</p><p><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405291049766.png" alt="image-20240529104949709"></p><p>在常量池中，一份字面量只存储一份，可是现在有字段名和字面量相同，在常量池中如何存储呢。</p><ul><li>将abc字面量存入常量池中，并在常量池中存储一份String类型的字面量，引用到abc的字面量，a1和a2再引用这份String类型的字面量。</li><li>而变量abc的字段名是直接引用abc字面量，这样就节省了空间。</li></ul><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405291053586.png" alt="image-20240529105319526" style="zoom: 50%;" /><ul><li>常量池中的数据都有一个编号，编号从1开始。在字段或者字节码指令中通过编号可以快速找到对应的数据。</li><li>字节码指令中通过编号引用到常量池的过程称之为&#x3D;&#x3D;符号引用&#x3D;&#x3D;</li></ul><p><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405291055093.png" alt="image-20240529105507030"></p><h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><p>局部变量表</p><ul><li>数组为0的位置存储的函数参数args，根据声明顺序生成局部变量表下标</li></ul><p><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405291100182.png" alt="image-20240529110059147"></p><ul><li><p>iconst_0 将常量 0 放入操作数栈</p></li><li><p>istore_1 将操作数栈的数据取出放在局部变量表数组中下标为1的位置（弹出，操作数栈的数据销毁）</p></li><li><p>iload_1 将局部变量表数组中下标为1的位置的数据放入操作数栈（复制，局部变量表的数据保留）</p></li><li><p>iadd 将操作数栈中最上面的两个值相加，并将结果存入操作数栈中</p></li></ul><p><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405291109804.png" alt="image-20240529110956718"></p><p>从字节码文件的层面解释 i &#x3D; i++：</p><p>将i++翻译为字节码文件之后，语句为：</p><ul><li>iinc 1 by 1：表示把局部变量表中下标为1的位置的数据加 1，并且此操作不进入操作数栈，是直接在局部变量表中完成。</li></ul><p>所以最初将0放入了操作数栈，然后存入局部变量表，然后局部变量表下标为 1 的数据 0 加 1，变成了 1，然后 istore_1 将操作数栈中的 0 存入 局部变量表中下标为 1 的位置，所以结果为 0</p><p><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405291115133.png" alt="image-20240529111535071"></p><p>++i 同理：</p><p><img src="https://abei-1256557411.cos.ap-chengdu.myqcloud.com/blogs/202405291116570.png" alt="image-20240529111632503"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>API开发平台</title>
       <link href="/2024/05/28/API%E5%BC%80%E5%8F%91%E5%B9%B3%E5%8F%B0/"/>
       <url>/2024/05/28/API%E5%BC%80%E5%8F%91%E5%B9%B3%E5%8F%B0/</url>
